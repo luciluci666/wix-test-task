@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    restart: always
+    ports:
+    - '${FRONTEND_PORT}:3000'
+    command: npm run dev
+    volumes:
+      - ./frontend/src:/app/src
+    environment:
+      - BACKEND_URL=${BACKEND_URL}
+      - CHOKIDAR_USEPOLLING=true
+
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+    restart: always
+    ports:
+    - '${BACKEND_PORT}:3000'
+    command: npm run start:dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - WIX_API_KEY=${WIX_API_KEY}
+      - WIX_SITE_ID=${WIX_SITE_ID}
