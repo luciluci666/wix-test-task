@@ -17,3 +17,8 @@ The application includes CRUD for Wix Store Products
 
 Once the development servers are running, you can access your Wix integration by navigating to `http://localhost:5173` in your web browser. 
 
+## Technical debt
+* tests for both BE & FE
+* better API docs (response / examples / description)
+* better error handling on BE side
+* better logging for better Observability

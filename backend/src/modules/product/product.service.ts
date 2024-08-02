@@ -16,7 +16,6 @@ export class ProductService {
 
   async createProduct(product: ProductDto): Promise<ProductDto> {
     const newProduct = await this.wixClient.createProduct(product);
-    console.log(product);
     if (product.variants?.length) {
       setTimeout(() => {
         this.wixClient.updateProductVariations(newProduct.id, product.variants);
@@ -29,7 +28,7 @@ export class ProductService {
   async updateProduct(id: string, product: ProductDto): Promise<ProductDto> {
     const updatedProduct = await this.wixClient.updateProduct(id, product);
 
-    if (product.variants?.length) {
+    if (product.variants?.length && updatedProduct.manageVariants) {
       updatedProduct.variants = await this.wixClient.updateProductVariations(
         id,
         product.variants,

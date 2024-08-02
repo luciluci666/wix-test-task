@@ -73,13 +73,11 @@ export class WixClient {
 
   async updateProduct(id: string, product: WixProduct): Promise<WixProduct> {
     try {
-      product.manageVariants = true;
       const response = await this.axios.patch(`/products/${id}`, {
         product: product,
       });
       return response.data.product;
     } catch (error) {
-      console.log(error);
       this.mapAndThrowError(error);
     }
   }
@@ -96,7 +94,6 @@ export class WixClient {
           variantIds: [variant.id],
         })),
       });
-      console.log(response.data);
       return this.convertVariants(response.data.variants);
     } catch (error) {
       this.mapAndThrowError(error);
