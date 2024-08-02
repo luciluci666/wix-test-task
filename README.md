@@ -1,6 +1,6 @@
 # Wix Test Task
 
-This is a test task for integrating Wix into your project. 
+This is a test task with Wix integration using Nest.js for BackEnd and  Vue.js + Element Plus for FrontEnd
 
 The application includes CRUD for Wix Store Products
 

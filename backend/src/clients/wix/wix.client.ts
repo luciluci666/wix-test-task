@@ -7,6 +7,10 @@ import { WixClientError } from './wix.error';
 import { ProductVariantDto } from 'src/modules/product/product.dto';
 import { DEFAULT_PRODUCT_OPTIONS } from './wix.constant';
 
+/*
+ * WixClient is a service that interacts with the Wix Store API.
+ * Wix Api documentation: https://dev.wix.com/docs/rest/business-solutions/stores/catalog/introduction
+ */
 @Injectable()
 export class WixClient {
   constructor(
@@ -28,7 +32,6 @@ export class WixClient {
   async getProduct(id: string): Promise<WixProduct> {
     try {
       const response = await this.axios.get(`/products/${id}`);
-      console.log(response.data.product.variants);
       return {
         ...response.data.product,
         variants: this.convertVariants(response.data.product.variants),
@@ -38,17 +41,18 @@ export class WixClient {
     }
   }
 
+  /*
+   *  Could be used to query products by price, for example:
+   *    query: {
+   *      filter: '{"price": "20"}',
+   *    },
+   */
   async queryProducts(): Promise<WixProduct[]> {
     try {
       const response = await this.axios.post('/products/query', {
         includeVariants: true,
       });
       return response.data.products;
-      // {
-      // query: {
-      //   filter: '{"price": "20"}',
-      // },
-      // },
     } catch (error) {
       this.mapAndThrowError(error);
     }
@@ -70,7 +74,6 @@ export class WixClient {
   async updateProduct(id: string, product: WixProduct): Promise<WixProduct> {
     try {
       product.manageVariants = true;
-      product.productOptions = DEFAULT_PRODUCT_OPTIONS;
       const response = await this.axios.patch(`/products/${id}`, {
         product: product,
       });
@@ -87,8 +90,13 @@ export class WixClient {
   ): Promise<ProductVariantDto[]> {
     try {
       const response = await this.axios.patch(`/products/${id}/variants`, {
-        variations: variations,
+        variants: variations.map((variant) => ({
+          ...variant,
+          choices: undefined,
+          variantIds: [variant.id],
+        })),
       });
+      console.log(response.data);
       return this.convertVariants(response.data.variants);
     } catch (error) {
       this.mapAndThrowError(error);
@@ -124,12 +132,14 @@ export class WixClient {
   private convertVariants(variants: WixVariant[]): ProductVariantDto[] {
     return variants.map((variant): ProductVariantDto => {
       return {
+        id: variant.id,
         choices: {
           Size: variant.choices.Size,
           Color: variant.choices.Color,
         },
         price: variant.variant.priceData.price,
         sku: variant.variant.sku,
+        visible: variant.variant.visible,
       };
     });
   }

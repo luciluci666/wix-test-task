@@ -17,6 +17,9 @@ export class ProductVariantChoiceDto {
 }
 
 export class ProductVariantDto {
+  @ApiPropertyOptional()
+  id?: string;
+
   @ApiProperty()
   choices?: ProductVariantChoiceDto;
 
@@ -25,6 +28,9 @@ export class ProductVariantDto {
 
   @ApiProperty()
   price?: number;
+
+  @ApiProperty()
+  visible?: boolean;
 }
 
 export class ProductDto {
